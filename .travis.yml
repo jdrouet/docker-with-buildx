@@ -1,0 +1,27 @@
+language: bash
+
+env:
+  - BUILDX_VERSION=0.4.2 DOCKER_VERSION=test
+  - BUILDX_VERSION=0.4.2 DOCKER_VERSION=stable
+  - BUILDX_VERSION=0.4.2 DOCKER_VERSION=19.03
+  - BUILDX_VERSION=0.4.1 DOCKER_VERSION=test
+  - BUILDX_VERSION=0.4.1 DOCKER_VERSION=stable
+  - BUILDX_VERSION=0.4.1 DOCKER_VERSION=19.03
+  - BUILDX_VERSION=0.4.0 DOCKER_VERSION=test
+  - BUILDX_VERSION=0.4.0 DOCKER_VERSION=stable
+  - BUILDX_VERSION=0.4.0 DOCKER_VERSION=19.03
+  - BUILDX_VERSION=0.3.1 DOCKER_VERSION=test
+  - BUILDX_VERSION=0.3.1 DOCKER_VERSION=stable
+  - BUILDX_VERSION=0.3.1 DOCKER_VERSION=19.03
+
+services:
+  - docker
+
+branches:
+  only:
+    - master
+
+script:
+  - docker build --build-arg BUILDX_VERSION=$BUILDX_VERSION --build-arg DOCKER_VERSION=$DOCKER_VERSION -t jdrouet/docker-with-buildx:$DOCKER_VERSION-$BUILDX_VERSION .
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - docker push jdrouet/docker-with-buildx:$DOCKER_VERSION-$BUILDX_VERSION
